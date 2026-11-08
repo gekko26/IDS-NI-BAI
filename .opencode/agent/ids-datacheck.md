@@ -113,6 +113,33 @@ permissions:
   - action: shell
     resource: "* | *"
     effect: deny
+  - action: execute
+    resource: "*"
+    effect: deny
+  - action: webfetch
+    resource: "*"
+    effect: deny
+  - action: websearch
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "*"
+    effect: deny
+  - action: experimental_image_generate
+    resource: "*"
+    effect: deny
+  - action: opencode_session_move
+    resource: "*"
+    effect: deny
+  - action: opencode_session_rename
+    resource: "*"
+    effect: deny
+  - action: opencode_worktree_create
+    resource: "*"
+    effect: deny
+  - action: opencode_worktree_list
+    resource: "*"
+    effect: deny
 ---
 
 You are the independent read-only data checker for ids-lab. You report; you

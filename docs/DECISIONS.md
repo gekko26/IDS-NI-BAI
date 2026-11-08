@@ -21,6 +21,23 @@ allowlist on the VM.
 (2026-11-08) Allowed attack targets are the ESP32 (192.168.50.10) and the
 gateway (192.168.50.1).
 (2026-11-08) Ettercap is manual, in separate clearly labeled sessions.
+(2026-11-08) Project instruction file is AGENTS.md at the project root
+(verified loaded); project config is opencode.json with an
+external_directory=ask permission (verified loaded via `opencode debug
+config`).
+(2026-11-08) Subagent files use native V2 frontmatter (ordered `permissions`
+action/resource/effect list; Markdown body as system prompt) in the singular
+folder .opencode/agent/ — folder name confirmed empirically with
+`opencode debug agents`. This differs from the older V1-style files in other
+projects, which remain untouched.
+(2026-11-08) The five agents also deny execute (Code Mode), webfetch,
+websearch, skill, experimental_image_generate and the four opencode
+session/worktree actions, after probes showed those tools were otherwise
+reachable under the default allow-all. Gg may relax this by editing the five
+agent files.
+(2026-11-08) Version control initialized inside the project (git init, root
+commit 31da9c4). data/ is .gitignored, so data/raw/.gitkeep and
+data/processed/.gitkeep exist on disk but are not committed.
 
 ## RECOMMENDED-NOT-CONFIRMED
 

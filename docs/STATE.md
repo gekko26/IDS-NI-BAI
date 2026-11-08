@@ -32,7 +32,23 @@ under ~150 lines: merge old entries into a summary rather than deleting facts.
 
 ## Verified
 
-(none yet — an entry goes here only with the command that produced it)
+(2026-11-08) opencode v2.2.5 present: `opencode --version`.
+(2026-11-08) Git repo scoped to the project: `git rev-parse --show-toplevel`
+→ /home/whou/NEW_CAPSTONE (root commit 31da9c4).
+(2026-11-08) The five subagents load from .opencode/agent/ (SINGULAR folder;
+this version confirmed on it via `opencode debug agents`, which lists
+ids-attack, ids-datacheck, ids-extract, ids-runner, ids-sniff, all
+mode: subagent, with their permission lists).
+(2026-11-08) Project opencode.json is a loaded config source:
+`opencode debug config` shows /home/whou/NEW_CAPSTONE/opencode.json.
+(2026-11-08) AGENTS.md is loaded as project instructions (harness surfaced it
+right after the file was written).
+(2026-11-08) Deny enforcement probed in real subagent sessions — verbatim
+refusals in the Log entry below.
+(2026-11-08) Nothing outside the project changed: sha256 of
+/home/whou/CAPSTONE/.opencode/agent/*.md identical before/after (mechanical
+diff result: "Files ... are identical"); the home-wide repo's untracked list
+is unchanged except NEW_CAPSTONE/ itself appearing.
 
 ## Unverified
 
@@ -47,7 +63,26 @@ under ~150 lines: merge old entries into a summary rather than deleting facts.
 
 ## Log
 
-(none yet)
+(2026-11-08) Setup session. Changed: created AGENTS.md, docs/{STATE,
+DECISIONS,HOST_SETUP,CAPTURE_SETUP,KALI_LOCKDOWN}.md, tools/{attack_policy,
+capture_policy}.yaml, .opencode/agent/{ids-extract,ids-runner,ids-datacheck,
+ids-attack,ids-sniff}.md, opencode.json, .gitignore and seven .gitkeep files;
+git init + root commit 31da9c4, later commits reflect agent hardening and this
+log. Verified: everything in the Verified section above. Enforcement probe
+verbatim refusals: `sudo -n true` and `ssh -V` in ids-runner, ids-attack,
+ids-sniff sessions each returned
+{"error":{"type":"permission.rejected","message":"Permission denied: shell"}};
+ids-runner's edit attempt on docs/STATE.md returned the edit variant of the
+same error; for ids-attack and ids-sniff the edit denial is enforced
+structurally (their toolset contains no edit/write tool, agent-quoted in the
+probe transcript). After the probes, all five agents additionally deny
+execute (Code Mode), webfetch, websearch, skill, experimental_image_generate
+and the four opencode session/worktree actions; `opencode debug agents`
+re-checked live: 5 agents, all new denies present.
+Still unverified: the eight lab-environment items listed above.
+Next step (user, by hand): docs/HOST_SETUP.md, then docs/CAPTURE_SETUP.md,
+then docs/KALI_LOCKDOWN.md. Next step (agents): none yet — do not start
+application code until the 12 features are decided (owner Gg).
 
 ## Next tasks (do not do now)
 
