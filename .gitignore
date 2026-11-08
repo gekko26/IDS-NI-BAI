@@ -1,0 +1,9 @@
+# ids-lab — never commit captured/derived data or anything secret
+data/
+*.pcap
+*.pcapng
+*.pkl
+.venv/
+__pycache__/
+*secret*
+*passphrase*

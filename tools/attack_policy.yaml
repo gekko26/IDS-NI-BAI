@@ -1,0 +1,48 @@
+# ids-lab attack policy
+#
+# DOCUMENTATION OF INTENT, NOT THE AUTHORITY.
+# The authoritative limits are the root-owned allowlist on the Kali VM and the
+# root-owned wrapper that checks it (docs/KALI_LOCKDOWN.md). This file
+# documents intent and feeds --dry-run previews and refusal tests.
+#
+# Every numeric value below is a PLACEHOLDER to be calibrated by Gg in a
+# supervised pilot. Nothing numeric here is a validated limit.
+
+allowed_targets:
+  - "192.168.50.10"   # ESP32
+  - "192.168.50.1"    # gateway
+
+denied_targets:
+  - "192.168.50.99"   # Pi IDS
+  - "192.168.50.50"   # attacker VM
+
+target_format: >
+  IPv4 literal only. Hostnames, CIDR notation, ranges and DNS names are
+  rejected in code before every command.
+
+enabled_attacks:
+  hping3_icmp:
+    parameter_ranges: "PLACEHOLDER, to be calibrated by Gg"
+    max_duration_s: "PLACEHOLDER, to be calibrated by Gg"
+  hping3_syn:
+    parameter_ranges: "PLACEHOLDER, to be calibrated by Gg"
+    max_duration_s: "PLACEHOLDER, to be calibrated by Gg"
+  hping3_udp:
+    parameter_ranges: "PLACEHOLDER, to be calibrated by Gg"
+    max_duration_s: "PLACEHOLDER, to be calibrated by Gg"
+  nmap_scans:
+    scan_types: "PLACEHOLDER — allowlist of nmap scan type names, TBD by Gg"
+    timing_templates: "PLACEHOLDER — allowlist of timing templates, TBD by Gg"
+    max_duration_s: "PLACEHOLDER, to be calibrated by Gg"
+
+disabled_attacks:
+  ettercap_arp: "manual only, in separate clearly labeled sessions"
+  hydra: "disabled — target service undecided"
+  nuclei: "disabled"
+  icmpv6_crafted: "disabled"
+
+global:
+  stop_file: "tools/STOP"
+  max_concurrent_runs: 1
+  timeout_required: "every executed attack command is wrapped in `timeout` by the VM wrapper"
+  dry_run_required: "tools/runner.py must implement --dry-run"

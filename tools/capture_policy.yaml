@@ -1,0 +1,50 @@
+# ids-lab capture policy
+#
+# DOCUMENTATION OF INTENT, NOT THE AUTHORITY.
+# The authoritative enforcement is the root-owned wrapper on the host
+# (docs/CAPTURE_SETUP.md, step 2). This file documents intent.
+#
+# Numeric limits are PLACEHOLDERS to be calibrated by Gg in a supervised
+# pilot. Nothing numeric here is a validated limit.
+
+interface_allowlist:
+  - "br0"   # unverified — confirm the real bridge name (ip -br link) and update this file by hand
+
+snaplen: 96
+
+capture_filter: none   # no BPF filter at capture time; select traffic offline
+
+output_dir:
+  allowed: "data/raw/"          # only this project's data/raw/ as an absolute path
+  refuse_other_paths: true
+  refuse_overwrite: true
+  refuse_path_separators_in_name: true
+  refuse_dot_dot: true
+  refuse_symlinks: true
+
+limits:
+  max_duration_s: "PLACEHOLDER, to be calibrated by Gg"
+  max_file_size_mb: "PLACEHOLDER, to be calibrated by Gg"
+  min_free_disk_gb: "PLACEHOLDER, to be calibrated by Gg"
+
+global:
+  stop_file: "tools/STOP"
+  max_concurrent_captures: 1
+  timeout_required: "every capture wrapped in `timeout`"
+  dry_run_required: "tools/capture.py must implement --dry-run"
+
+metadata_per_pcap:
+  - sha256
+  - packet count
+  - first and last timestamp
+  - dumpcap dropped-packet statistics
+  - interface
+  - snaplen
+  - run_id
+  - class
+  - condition tag
+  - success flag
+
+authority_note: >
+  tools/capture.py must call `sudo -n /usr/local/sbin/ids-capture-wrap` and
+  must never call dumpcap or tcpdump itself.
