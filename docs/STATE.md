@@ -29,6 +29,22 @@ under ~150 lines: merge old entries into a summary rather than deleting facts.
   come later.
 - Project setup state (2026-11-08): rules, docs, policies, opencode project
   config and five subagents created; no application code yet.
+- Target deployment spec (2026-11-09, from Gg, design only — nothing run):
+  one Raspberry Pi 4B 8GB is gateway + AP (hostapd) + bridge br0 (eth0 +
+  wlan0) + capture point (libpcap/tcpdump on br0) + feature extraction
+  (2.0 s windows, 12 features) + Random Forest inference + FastAPI bound to
+  127.0.0.1 behind Nginx, which serves the built React dashboard and
+  forwards /api; SQLite with WAL stores detections, Snort alerts,
+  telemetry, network stats and historical logs. Raspberry Pi OS Lite
+  64-bit, headless over SSH (Ed25519), dnsmasq for DHCP/DNS, systemd for
+  deployment. Dev and training stay on the Arch laptop (Vim, tmux during
+  dev, rsync/Git over SSH). Snort 2.9 is comparison baseline only; alerts
+  imported into SQLite by a parser script. Wi-Fi clients: ESP32, IP camera,
+  laptop hosting the Kali VM.
+- Conflicts with the older 2026-11-08 lab notes (unresolved): AP role moves
+  from the laptop's USB adapter to the Pi's wlan0; the Pi's IP is unstated
+  (old notes: Pi .99, gateway .1 = laptop); the host that runs Snort is
+  unstated.
 
 ## Verified
 
@@ -60,6 +76,13 @@ is unchanged except NEW_CAPSTONE/ itself appearing.
 - the Arch capture setup
 - whether the sudoers rule is tight
 - whether Wi-Fi-to-Wi-Fi traffic (ESP32 to camera) reaches the bridge
+- the Pi's IP in 192.168.50.0/24 (spec: Pi is gateway/AP; old notes: Pi .99,
+  gateway .1 = laptop) — raised 2026-11-09
+- which host runs Snort 2.9 in the deployment (Pi or laptop)
+- whether the allowed-to-attack "gateway (192.168.50.1)" target becomes the
+  Pi itself once it is the gateway (collides with the Pi-excluded note)
+- everything in the 2026-11-09 deployment spec (design only, nothing run
+  yet)
 
 ## Log
 
@@ -83,6 +106,13 @@ Still unverified: the eight lab-environment items listed above.
 Next step (user, by hand): docs/HOST_SETUP.md, then docs/CAPTURE_SETUP.md,
 then docs/KALI_LOCKDOWN.md. Next step (agents): none yet — do not start
 application code until the 12 features are decided (owner Gg).
+
+(2026-11-09) Context session. Changed: recorded Gg's full system summary
+into STATE (Current state + Unverified) and DECISIONS; nothing else — no
+code, data, policies or network settings touched. Verified: nothing new
+this session. Unresolved: Pi's IP, Snort host, gateway-target collision
+(see Unverified list) — Gg to confirm. Next step (agents): unchanged; the
+12 features remain the gating item.
 
 ## Next tasks (do not do now)
 

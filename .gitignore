@@ -7,3 +7,17 @@ data/
 __pycache__/
 *secret*
 *passphrase*
+
+# --- app code (Frontend/Backend) ---
+venv/
+*.py[cod]
+.env
+*.db
+*.sqlite3
+*.db-wal
+*.db-shm
+*.joblib
+node_modules/
+dist/
+build/
+.vite/

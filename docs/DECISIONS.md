@@ -3,7 +3,7 @@
 Choices Gg makes, recorded with a date and marked DECIDED, OPEN or
 RECOMMENDED-NOT-CONFIRMED. Read at the start of every session.
 
-Last updated: 2026-11-08
+Last updated: 2026-11-09
 
 ## DECIDED
 
@@ -38,6 +38,20 @@ agent files.
 (2026-11-08) Version control initialized inside the project (git init, root
 commit 31da9c4). data/ is .gitignored, so data/raw/.gitkeep and
 data/processed/.gitkeep exist on disk but are not committed.
+(2026-11-09, from Gg's system summary) Target architecture: a single
+Raspberry Pi 4B 8GB is the gateway, AP (hostapd), bridge br0 (eth0+wlan0),
+capture point (libpcap/tcpdump on br0), feature extractor (2.0 s windows,
+12 features) and Random Forest inference host; FastAPI binds 127.0.0.1
+behind Nginx — only Nginx is network-exposed — serving the built React
+dashboard and forwarding /api; SQLite with WAL stores detections, Snort
+alerts, telemetry, network stats and historical logs.
+(2026-11-09) Raspberry Pi OS Lite 64-bit, headless via SSH Ed25519;
+dnsmasq provides DHCP and DNS; deployment under systemd; development on
+the Arch laptop (Vim, tmux during dev, rsync or Git over SSH).
+(2026-11-09) Training happens only on the laptop; the Pi performs
+inference only.
+(2026-11-09) Snort 2.9 is a standalone comparison baseline, not part of
+the IDS pipeline; a parser script imports its alerts into SQLite.
 
 ## RECOMMENDED-NOT-CONFIRMED
 
@@ -53,6 +67,12 @@ and would inflate accuracy.
 ## OPEN
 
 - The 12 features (owner: Gg).
+- The Pi's IP in 192.168.50.0/24 (spec makes the Pi the gateway; old notes
+  say Pi .99 with the laptop as .1) — raised 2026-11-09.
+- Which host runs Snort 2.9 in the deployment (Pi or laptop).
+- Whether the allowed-to-attack "gateway (192.168.50.1)" target becomes the
+  Pi itself in the new architecture — conflicts with the Pi-excluded note.
+- Whether the laptop's USB Wi-Fi AP setup is retired by the Pi-as-AP spec.
 - The Hydra target service.
 - Whether to add a nuclei scan class and a crafted ICMPv6 packet class.
 - The detection-rate definition.
