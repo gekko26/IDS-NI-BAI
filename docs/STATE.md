@@ -88,23 +88,17 @@ is unchanged except NEW_CAPSTONE/ itself appearing.
 
 ## Log
 
-(2026-11-08) Setup session. Changed: created AGENTS.md, docs/{STATE,
-DECISIONS,HOST_SETUP,CAPTURE_SETUP,KALI_LOCKDOWN}.md, tools/{attack_policy,
-capture_policy}.yaml, .opencode/agent/{ids-extract,ids-runner,ids-datacheck,
-ids-attack,ids-sniff}.md, opencode.json, .gitignore and seven .gitkeep files;
-git init + root commit 31da9c4, later commits reflect agent hardening and this
-log. Verified: everything in the Verified section above. Enforcement probe
-verbatim refusals: `sudo -n true` and `ssh -V` in ids-runner, ids-attack,
-ids-sniff sessions each returned
-{"error":{"type":"permission.rejected","message":"Permission denied: shell"}};
-ids-runner's edit attempt on docs/STATE.md returned the edit variant of the
-same error; for ids-attack and ids-sniff the edit denial is enforced
-structurally (their toolset contains no edit/write tool, agent-quoted in the
-probe transcript). After the probes, all five agents additionally deny
-execute (Code Mode), webfetch, websearch, skill, experimental_image_generate
-and the four opencode session/worktree actions; `opencode debug agents`
-re-checked live: 5 agents, all new denies present.
-Still unverified: the eight lab-environment items listed above.
+(2026-11-08) Setup session. Created AGENTS.md, docs/*, tools/*.yaml,
+.opencode/agent/{ids-extract,ids-runner,ids-datacheck,ids-attack,
+ids-sniff}.md, opencode.json, .gitignore; git init + commits 31da9c4,
+c28c774. Verified: opencode v2.2.5; repo root; 5 agents load (SINGULAR
+.opencode/agent/ folder); AGENTS.md + opencode.json loaded; deny
+enforcement probed live — shell/edit denials as
+{"error":{"type":"permission.rejected",…}}; after probes the five agents
+also deny execute, webfetch, websearch, skill, image-generate and the
+four opencode session/worktree actions. Nothing outside the project
+changed (sha256 diff + home-repo untracked list). Still unverified: the
+eight lab-environment items listed in Unverified.
 Next step (user, by hand): docs/HOST_SETUP.md, then docs/CAPTURE_SETUP.md,
 then docs/KALI_LOCKDOWN.md. Next step (agents): none yet — do not start
 application code until the 12 features are decided (owner Gg).
@@ -125,18 +119,17 @@ Verified then (outputs pasted in replies): build ok, /api/health ok,
 WAL + roundtrip + persistence, /api proxy ok. Vite binds localhost/::1 —
 use localhost, not 127.0.0.1. Superseded detail lives in earlier commits.
 
-(2026-11-09) App task 2 ("go"): real auth + dashboard detections. New:
-app/security.py (PBKDF2-SHA256 600k stdlib; dummy-verify for unknown
-users), app/routers/{auth,detections}.py, users+sessions tables +
-detections list/summary endpoint in app/db.py; scripts/create_user.py
-(bootstrapped admin once) and scripts.seed_samples.py (10 rows, source=
-sample); tests/test_{security,db}.py: 9 unittest tests. Frontend login
-POSTs /api/login, keeps a localStorage token, boots via /api/me, logs
-out via /api/logout; dashboard shows summary tiles + a recent-table.
-Bug found+fixed: missing get_connection import in detections.py (500 →
-traceback). Verified (pasted): unittest 9/9 OK; curl: wrong password
-401, login 200+token, me 200, detections-no-token 401, detections-
-with-token = summary of 10 rows, logout→401; npm run build ok.
+(2026-11-09) App task 2 ("go"): real auth + detections. New:
+app/security.py (PBKDF2-SHA256 600k, stdlib; dummy-verify for unknown
+users), app/routers/{auth,detections}.py, users+sessions tables,
+detections list/summary endpoint; scripts/create_user.py (bootstrapped
+admin once) + seed_samples.py (10 rows source='sample');
+tests/test_{security,db}.py (9 tests). Frontend: real login flow
+(localStorage token, boot via /api/me, logout API call) and a summary +
+recent-table dashboard. Bug found+fixed: missing get_connection import
+(500). Verified (pasted in replies): unittest 9/9 OK; curl suite —
+wrong-password 401, login 200, me 200, no-token 401, token summary of 10
+rows, logout then 401; npm build ok.
 Unverified: browser rendering of auth (no browser). Open: rate limiting,
 token transport, HTTPS-with-Nginx. Next: real detector after 12 features.
 
