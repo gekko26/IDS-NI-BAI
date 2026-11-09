@@ -28,10 +28,12 @@ under ~150 lines: merge old entries into a summary rather than deleting facts.
 - Training first runs on the laptop with no Raspberry Pi. Pi measurements
   come later.
 - Project setup state (2026-11-09 update): rules, docs, policies, opencode
-  config and five subagents; plus Frontend/ (empty, .gitkeep) and Backend/
-  with a working Python venv at Backend/.venv (Python 3.14.7, pip 26.2.1);
-  README.md and an extended .gitignore; git remote origin =
-  git@github.com:gekko26/IDS-NI-BAI.git, master pushed and tracking.
+  config and five subagents; plus Frontend/ and Backend/ (venv at
+  Backend/.venv, Python 3.14.7), README.md and Backend/README.md, extended
+  .gitignore; git remote origin = git@github.com:gekko26/IDS-NI-BAI.git,
+  master pushed and tracking. App state by 2026-11-09: real auth
+  (PBKDF2 + session tokens), detections endpoint + seeded samples, unit
+  tests, designed dashboard; dev ports FastAPI 8000 / Vite 5173.
 - Target deployment spec (2026-11-09, from Gg, design only — nothing run):
   one Raspberry Pi 4B 8GB is gateway + AP (hostapd) + bridge br0 (eth0 +
   wlan0) + capture point (libpcap/tcpdump on br0) + feature extraction
@@ -43,30 +45,21 @@ under ~150 lines: merge old entries into a summary rather than deleting facts.
   deployment. Dev and training stay on the Arch laptop (Vim, tmux during
   dev, rsync/Git over SSH). Snort 2.9 is comparison baseline only; alerts
   imported into SQLite by a parser script. Wi-Fi clients: ESP32, IP camera,
-  laptop hosting the Kali VM.
-  The laptop USB
-  adapter-vs-Pi-AP question, the Pi's IP (old notes: Pi .99, gateway
-  .1 = laptop) and the Snort host are open — see Unverified.
+  laptop hosting the Kali VM. Open spec questions (Pi IP, Snort host,
+  USB-adapter AP retirement) live in Unverified/OPEN.
 
 ## Verified
 
-(2026-11-08) opencode v2.2.5 present: `opencode --version`.
-(2026-11-08) Git repo scoped to the project: `git rev-parse --show-toplevel`
-→ /home/whou/NEW_CAPSTONE (root commit 31da9c4).
-(2026-11-08) The five subagents load from .opencode/agent/ (SINGULAR folder;
-this version confirmed on it via `opencode debug agents`, which lists
-ids-attack, ids-datacheck, ids-extract, ids-runner, ids-sniff, all
-mode: subagent, with their permission lists).
-(2026-11-08) Project opencode.json is a loaded config source:
-`opencode debug config` shows /home/whou/NEW_CAPSTONE/opencode.json.
-(2026-11-08) AGENTS.md is loaded as project instructions (harness surfaced it
-right after the file was written).
-(2026-11-08) Deny enforcement probed in real subagent sessions — verbatim
-refusals in the Log entry below.
-(2026-11-08) Nothing outside the project changed: sha256 of
-/home/whou/CAPSTONE/.opencode/agent/*.md identical before/after (mechanical
-diff result: "Files ... are identical"); the home-wide repo's untracked list
-is unchanged except NEW_CAPSTONE/ itself appearing.
+(2026-11-08) opencode v2.2.5 (`opencode --version`); git repo rooted at
+/home/whou/NEW_CAPSTONE (commits 31da9c4, c28c774); all five subagents
+load — `opencode debug agents` lists ids-attack, ids-datacheck,
+ids-extract, ids-runner, ids-sniff from the SINGULAR .opencode/agent/
+folder; opencode.json is a loaded config source (`opencode debug
+config`); AGENTS.md is loaded as project instructions. Deny enforcement
+was probed live in subagent sessions (verbatim refusals in the 2026-11-08
+log entry). Nothing outside the project changed: sha256 of the old
+CAPSTONE/.opencode/agent/*.md identical before/after; home-wide untracked
+list unchanged except NEW_CAPSTONE/ appearing.
 
 ## Unverified
 
