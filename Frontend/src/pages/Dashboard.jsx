@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import useCountUp from '../hooks/useCountUp.js'
+import Hero from '../components/Hero.jsx'
+import RuntimePanel from '../components/RuntimePanel.jsx'
 import {
   IconActivity,
   IconCheck,
-  IconGauge,
   IconLayers,
   IconLogOut,
-  IconRefresh,
   IconShield,
   IconShieldAlert,
 } from '../components/Icons.jsx'
@@ -27,12 +27,14 @@ function fmtTs(ts) {
   return `${ts.slice(0, 10)} ${ts.slice(11, 19)}Z`
 }
 
-function agoText(ms) {
-  const s = Math.max(0, Math.round(ms / 1000))
-  if (s < 5) return 'just now'
+function ageText(ts) {
+  const t = Date.parse(ts)
+  if (!Number.isFinite(t)) return '—'
+  const s = Math.max(0, Math.round((Date.now() - t) / 1000))
   if (s < 60) return `${s}s ago`
   const m = Math.round(s / 60)
-  return `${m}m ago`
+  if (m < 60) return `${m}m ago`
+  return `${Math.round(m / 60)}h ago`
 }
 
 function Tile({ kind, icon, label, value, suffix }) {
@@ -80,12 +82,19 @@ function ClassChart({ byClass, total }) {
   )
 }
 
+const FILTERS = [
+  ['all', 'All'],
+  ['attacks', 'Attacks'],
+  ['benign', 'Benign'],
+]
+
 export default function Dashboard({ user, onLogout }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [refreshing, setRefreshing] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [, forceTick] = useState(0)
+  const [filter, setFilter] = useState('all')
   const alive = useRef(true)
 
   useEffect(() => {
@@ -142,6 +151,20 @@ export default function Dashboard({ user, onLogout }) {
       ) / 10
     : 0
 
+  const counts = {
+    all: items.length,
+    attacks: items.filter((r) => r.predicted_class !== 'benign').length,
+    benign: items.filter((r) => r.predicted_class === 'benign').length,
+  }
+  const filtered =
+    filter === 'all'
+      ? items
+      : items.filter((r) =>
+          filter === 'attacks'
+            ? r.predicted_class !== 'benign'
+            : r.predicted_class === 'benign'
+        )
+
   const initial = (user.name?.[0] ?? 'u').toUpperCase()
 
   return (
@@ -165,24 +188,6 @@ export default function Dashboard({ user, onLogout }) {
       </header>
 
       <main className="dash-main">
-        <div className="dash-head">
-          <h1>Overview</h1>
-          <div className="dash-meta">
-            <span className="updated">
-              {refreshing ? 'updating…' : lastUpdated ? `updated ${agoText(Date.now() - lastUpdated)}` : ' '}
-            </span>
-            <button
-              className="icon-btn"
-              type="button"
-              onClick={load}
-              title="Refresh now"
-              aria-label="Refresh now"
-            >
-              <IconRefresh size={16} className={refreshing ? 'spin' : ''} />
-            </button>
-          </div>
-        </div>
-
         {error ? (
           <div className="login-error shake-enter" role="alert">
             <IconShieldAlert size={17} />
@@ -190,6 +195,13 @@ export default function Dashboard({ user, onLogout }) {
           </div>
         ) : summary ? (
           <>
+            <Hero
+              items={items}
+              onRefresh={load}
+              refreshing={refreshing}
+              lastUpdated={lastUpdated}
+            />
+
             <div className="stats">
               <Tile kind="total" icon={<IconLayers size={17} />} label="Windows analysed" value={summary.total} />
               <Tile kind="attacks" icon={<IconShieldAlert size={17} />} label="Attacks detected" value={summary.attacks} />
@@ -197,72 +209,93 @@ export default function Dashboard({ user, onLogout }) {
               <Tile kind="avg" icon={<IconActivity size={17} />} label="Avg inference" value={avgLatency || 0} suffix="ms" />
             </div>
 
-            <ClassChart byClass={summary.by_class ?? {}} total={summary.total} />
+            <div className="cols">
+              <div className="col-main">
+                <ClassChart byClass={summary.by_class ?? {}} total={summary.total} />
 
-            <section className="panel">
-              <header className="panel-head">
-                <h2>Recent windows</h2>
-                <span className="panel-hint">
-                  <IconGauge size={13} /> classification output per 2&nbsp;s
-                </span>
-              </header>
-              <div className="tablewrap">
-                <table className="detections">
-                  <thead>
-                    <tr>
-                      <th>Time (UTC)</th>
-                      <th>Classification</th>
-                      <th>Confidence</th>
-                      <th>Inference</th>
-                      <th>Window</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {items.map((row, i) => {
-                      const attack = row.predicted_class !== 'benign'
-                      return (
-                        <tr
-                          key={row.id}
-                          className="row-in"
-                          style={{ animationDelay: `${Math.min(i, 14) * 30}ms` }}
-                        >
-                          <td className="mono">{fmtTs(row.ts)}</td>
-                          <td>
-                            <span className={`badge ${attack ? 'badge-attack' : 'badge-benign'}`}>
-                              {CLASS_LABELS[row.predicted_class] ?? row.predicted_class}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="conf">{(row.confidence * 100).toFixed(1)}%</span>
-                          </td>
-                          <td className="mono">
-                            {row.latency_ms != null ? `${row.latency_ms.toFixed(1)} ms` : '—'}
-                          </td>
-                          <td className="mono dim">
-                            {fmtTs(row.window_start)} → {fmtTs(row.window_end).slice(11)}
-                          </td>
-                          <td>{row.source}</td>
+                <section className="panel">
+                  <header className="panel-head">
+                    <h2>Recent windows</h2>
+                    <span className="panel-hint">one row = one 2 s window</span>
+                  </header>
+
+                  <div className="segmented" role="tablist" aria-label="Filter detections">
+                    {FILTERS.map(([key, label]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        role="tab"
+                        aria-selected={filter === key}
+                        className={filter === key ? 'on' : ''}
+                        onClick={() => setFilter(key)}
+                      >
+                        {label}
+                        <em>{counts[key]}</em>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="tablewrap">
+                    <table className="detections">
+                      <thead>
+                        <tr>
+                          <th>Age</th>
+                          <th>Classification</th>
+                          <th>Confidence</th>
+                          <th>Inference</th>
+                          <th>Source</th>
                         </tr>
-                      )
-                    })}
-                    {items.length === 0 ? (
-                      <tr>
-                        <td colSpan="6" className="empty">
-                          No detections recorded yet.
-                        </td>
-                      </tr>
-                    ) : null}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody>
+                        {filtered.map((row, i) => {
+                          const attack = row.predicted_class !== 'benign'
+                          return (
+                            <tr
+                              key={row.id}
+                              className="row-in"
+                              style={{ animationDelay: `${Math.min(i, 14) * 26}ms` }}
+                            >
+                              <td className="mono" title={fmtTs(row.ts)}>
+                                {ageText(row.ts)}
+                              </td>
+                              <td>
+                                <span className={`badge ${attack ? 'badge-attack' : 'badge-benign'}`}>
+                                  {CLASS_LABELS[row.predicted_class] ?? row.predicted_class}
+                                </span>
+                              </td>
+                              <td>
+                                <span className="conf">{(row.confidence * 100).toFixed(1)}%</span>
+                              </td>
+                              <td className="mono">
+                                {row.latency_ms != null ? `${row.latency_ms.toFixed(1)} ms` : '—'}
+                              </td>
+                              <td>{row.source}</td>
+                            </tr>
+                          )
+                        })}
+                        {filtered.length === 0 ? (
+                          <tr>
+                            <td colSpan="5" className="empty">
+                              Nothing here in this filter.
+                            </td>
+                          </tr>
+                        ) : null}
+                      </tbody>
+                    </table>
+                  </div>
+                  {sampleRows ? (
+                    <p className="foot-note">
+                      {sampleRows} of these rows are clearly-tagged development samples —
+                      real pipeline rows replace them once the detector is wired up.
+                    </p>
+                  ) : null}
+                </section>
               </div>
-              {sampleRows ? (
-                <p className="foot-note">
-                  {sampleRows} of these rows are clearly-tagged development samples —
-                  real pipeline rows replace them once the detector is wired up.
-                </p>
-              ) : null}
-            </section>
+
+              <aside className="col-side">
+                <RuntimePanel token={user.token} />
+              </aside>
+            </div>
           </>
         ) : (
           <p className="subtitle">Loading detections…</p>

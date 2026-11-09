@@ -84,6 +84,12 @@ All motion is CSS/SVG — no animation libraries; particles are semantic
 (packet flow matches the IDS story). Reduced-motion respected via
 @media (prefers-reduced-motion: reduce). Bundle stays single-Vite-build
 without routing/icon/chart libs.
+(2026-11-09, "post-signin" task) The dashboard renders only real backend
+numbers — /api/detections and the new read-only /api/system. No mock
+data anywhere: the sparkline buckets are per-minute counts of returned
+windows, and the "threats / all clear" narrative is derived solely from
+predicted_class. The old /api/db/status stays a smoke test (it writes a
+row) and is never polled by the UI.
 (2026-11-09, app task) Backend: FastAPI 0.162.2 + Uvicorn 0.54.0 inside
 Backend/.venv (requirements.txt = pip freeze); SQLite via stdlib sqlite3
 (no ORM) in Backend/app/db.py, dev DB file Backend/data/app.db

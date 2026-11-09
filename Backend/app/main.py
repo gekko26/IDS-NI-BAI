@@ -4,14 +4,18 @@ Runs bound to 127.0.0.1 only; Nginx is the network-facing reverse proxy, as
 per the deployment spec. Endpoints: health, a database smoke test, auth
 (login/me/logout) and detections for the dashboard.
 """
+import platform
 import random
+import time
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
 from .db import DB_PATH, get_connection, init_db
 from .routers import auth, detections
+
+START_TIME = time.time()
 
 
 @asynccontextmanager
@@ -29,6 +33,30 @@ app.include_router(detections.router)
 @app.get("/api/health")
 def health():
     return {"status": "ok", "time": datetime.now(timezone.utc).isoformat()}
+
+
+@app.get("/api/system")
+def system(username: str = Depends(auth.current_user)):
+    """Read-only runtime facts for the dashboard's status rail.
+
+    No writes here — unlike /api/db/status, this can be polled freely.
+    """
+    conn = get_connection()
+    try:
+        telemetry_rows = conn.execute("SELECT COUNT(*) FROM telemetry").fetchone()[0]
+        detections_rows = conn.execute("SELECT COUNT(*) FROM detections").fetchone()[0]
+        journal_mode = conn.execute("PRAGMA journal_mode").fetchone()[0]
+    finally:
+        conn.close()
+    return {
+        "process_uptime_s": round(time.time() - START_TIME),
+        "python": platform.python_version(),
+        "journal_mode": journal_mode,
+        "telemetry_rows": telemetry_rows,
+        "detections_rows": detections_rows,
+        "db_bytes": DB_PATH.stat().st_size if DB_PATH.exists() else 0,
+        "time": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 @app.get("/api/db/status")

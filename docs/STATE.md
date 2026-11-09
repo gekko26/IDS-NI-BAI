@@ -126,23 +126,25 @@ rows, logout then 401; npm build ok.
 Unverified: browser rendering of auth (no browser). Open: rate limiting,
 token transport, HTTPS-with-Nginx. Next: real detector after 12 features.
 
-(2026-11-09) App task 3 (Gg): visual redesign — "smooth, animated, not
-template-looking". Changed (frontend only, zero new npm deps): split
-login with dark animated brand panel (drifting dotted grid, self-drawing
-shield, SVG network graph with SMIL animateMotion packets, floating
-mark), floating-label fields with leading icons + password eye toggle,
-sheen/lift/nudge buttons, shake error, ping API pill; dashboard gets
-sticky topbar with live pill + avatar, count-up stat tiles with hover
-lift and accent top-line, class-distribution grow-bars, staggered row
-entrances, spin-refresh + "updated Ns ago" 10 s auto-poll. Files: new
-src/components/{Icons,BrandPanel}.jsx, src/hooks/useCountUp.js; rewrote
-Login.jsx, Dashboard.jsx, styles.css; index.html favicon/theme-color.
-Verified: `npm run build` → 36 modules, 158 kB JS / 13.7 kB CSS ok; dev
-server still serves /api/health through the proxy (pasted curl). DB/
-backend untouched. Unverified: actual browser rendering (no browser
-here) — including SMIL motion and reduced-motion behaviour. Next: Gg
-looks at localhost:5173 and says what to tweak; detector still gated on
-the 12 features.
+(2026-11-09) App task 4 (Gg: "after sign-in still plain"): hero band +
+runtime rail. New backend endpoint GET /api/system — read-only, token-
+protected (process uptime, detection/telemetry counts, WAL mode, db
+bytes); Frontend: components/Hero.jsx (narrative all-clear vs threats,
+15-min SVG sparkline with draw-in + dashed attack series + SMIL ping
+dot, legend, updated/refresh chip), components/RuntimePanel.jsx
+(ticking uptime, WAL chip, 10 s poll), Dashboard two-column body with
+segmented All/Attacks/Benign filter and relative-age column. Verified
+(pasted): /api/system → 200 with token (uptime 11 s, wal, 10
+detections, 36.9 KB db) and 401 without; npm build = 38 modules ok.
+Unverified: browser look. Next: Gg reviews; detector still gated on the
+12 features.
+
+(2026-11-09) App task 3 (Gg): visual redesign of login + dashboard —
+split dark brand panel (self-drawing shield, SMIL packet graph, grid
+drift), choreographed form (float labels, shake, sheen, ping pill), top
+bar + count-up tiles + grow-bars + staggered rows. Zero new npm deps;
+new components/{Icons,BrandPanel}.jsx, hooks/useCountUp.js. Verified:
+build ok; browser rendering unverified (no browser here).
 
 ## Next tasks (do not do now)
 
