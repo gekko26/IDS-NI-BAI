@@ -90,6 +90,11 @@ data anywhere: the sparkline buckets are per-minute counts of returned
 windows, and the "threats / all clear" narrative is derived solely from
 predicted_class. The old /api/db/status stays a smoke test (it writes a
 row) and is never polled by the UI.
+(2026-11-09, "dark" task) The whole app is dark-themed, per Gg ("too
+white"): ink families with a brightened accent (#3f7dff), translucent
+elevation layers (gradient + inset hairline + deep shadow), aurora
+glows, glass topbar. Palette discipline unchanged: one blue accent,
+red only for threats, mint only for live/healthy.
 (2026-11-09, app task) Backend: FastAPI 0.162.2 + Uvicorn 0.54.0 inside
 Backend/.venv (requirements.txt = pip freeze); SQLite via stdlib sqlite3
 (no ORM) in Backend/app/db.py, dev DB file Backend/data/app.db

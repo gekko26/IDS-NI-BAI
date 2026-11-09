@@ -127,17 +127,22 @@ Unverified: browser rendering of auth (no browser). Open: rate limiting,
 token transport, HTTPS-with-Nginx. Next: real detector after 12 features.
 
 (2026-11-09) App task 4 (Gg: "after sign-in still plain"): hero band +
-runtime rail. New backend endpoint GET /api/system — read-only, token-
-protected (process uptime, detection/telemetry counts, WAL mode, db
-bytes); Frontend: components/Hero.jsx (narrative all-clear vs threats,
-15-min SVG sparkline with draw-in + dashed attack series + SMIL ping
-dot, legend, updated/refresh chip), components/RuntimePanel.jsx
-(ticking uptime, WAL chip, 10 s poll), Dashboard two-column body with
+runtime rail. New read-only, token-protected GET /api/system (uptime,
+counts, WAL, db bytes); Hero.jsx (narrative all-clear vs threats, 15-min
+SVG sparkline with draw-in + dashed attack series + SMIL ping dot),
+RuntimePanel.jsx (ticking uptime, WAL chip), two-column body with
 segmented All/Attacks/Benign filter and relative-age column. Verified
-(pasted): /api/system → 200 with token (uptime 11 s, wal, 10
-detections, 36.9 KB db) and 401 without; npm build = 38 modules ok.
-Unverified: browser look. Next: Gg reviews; detector still gated on the
-12 features.
+(pasted): /api/system 200 with token / 401 without; npm build ok.
+(2026-11-09) App task 5 (Gg: "too white, make it designer-grade"): full
+dark theme. Tokens flipped to ink family (bg #0a0f1c, cards #101828);
+every card = translucent top-light gradient over surface + inset
+hairline + deep shadow; aurora drifting glows behind pages; glass
+topbar (backdrop-filter); brightened accent #3f7dff for dark contrast;
+translucent badges/chips/pills; dark inputs (caret accent), buttons,
+table, scrollbars; focus-visible rings; sparkline/attack-line glows.
+styles.css rewritten end-to-end (19.6 kB). Verified: npm build = 38
+modules ok. Browser look still unverified. Next: Gg eyes it; detector
+gated on the 12 features.
 
 (2026-11-09) App task 3 (Gg): visual redesign of login + dashboard —
 split dark brand panel (self-drawing shield, SMIL packet graph, grid
