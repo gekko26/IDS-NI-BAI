@@ -27,8 +27,11 @@ under ~150 lines: merge old entries into a summary rather than deleting facts.
   external-style detection rate).
 - Training first runs on the laptop with no Raspberry Pi. Pi measurements
   come later.
-- Project setup state (2026-11-08): rules, docs, policies, opencode project
-  config and five subagents created; no application code yet.
+- Project setup state (2026-11-09 update): rules, docs, policies, opencode
+  config and five subagents; plus Frontend/ (empty, .gitkeep) and Backend/
+  with a working Python venv at Backend/.venv (Python 3.14.7, pip 26.2.1);
+  README.md and an extended .gitignore; git remote origin =
+  git@github.com:gekko26/IDS-NI-BAI.git, master pushed and tracking.
 - Target deployment spec (2026-11-09, from Gg, design only — nothing run):
   one Raspberry Pi 4B 8GB is gateway + AP (hostapd) + bridge br0 (eth0 +
   wlan0) + capture point (libpcap/tcpdump on br0) + feature extraction
@@ -113,6 +116,19 @@ code, data, policies or network settings touched. Verified: nothing new
 this session. Unresolved: Pi's IP, Snort host, gateway-target collision
 (see Unverified list) — Gg to confirm. Next step (agents): unchanged; the
 12 features remain the gating item.
+
+(2026-11-09) Setup task on Gg's request. Changed: created Frontend/ and
+Backend/, backend venv at Backend/.venv (`python -m venv`, Python 3.14.7,
+pip 26.2.1, nothing installed), top-level README.md, Frontend/.gitkeep,
+Backend/README.md, .gitignore extended (app-code block: venv/, *.py[cod],
+.env, *.db, *.sqlite3, *.db-wal, *.db-shm, *.joblib, node_modules/, dist/,
+build/, .vite/). Git already initialized from 2026-11-08, so no re-init;
+added remote origin git@github.com:gekko26/IDS-NI-BAI.git and pushed.
+Verified: `git push -u origin master` → "[new branch] master -> master,
+upstream set"; `Backend/.venv/bin/python --version` → Python 3.14.7;
+staged list showed only the new files plus the docs edits, data/ excluded.
+Unverified: nothing new. Next step: Gg to decide the 12 features, then
+backend/frontend scaffolding in the dirs.
 
 ## Next tasks (do not do now)
 

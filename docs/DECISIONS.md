@@ -52,6 +52,12 @@ the Arch laptop (Vim, tmux during dev, rsync or Git over SSH).
 inference only.
 (2026-11-09) Snort 2.9 is a standalone comparison baseline, not part of
 the IDS pipeline; a parser script imports its alerts into SQLite.
+(2026-11-09, setup task) Frontend/ and Backend/ dirs created as written by
+Gg (capitalized); the backend venv lives at Backend/.venv (matches the
+existing `.venv/` ignore rule; `venv/` now also ignored), made with system
+Python 3.14.7 — no packages installed yet. GitHub remote origin =
+git@github.com:gekko26/IDS-NI-BAI.git; branch master pushed as the first
+sync (only the repo's own docs/code, data/ stays excluded by .gitignore).
 
 ## RECOMMENDED-NOT-CONFIRMED
 
