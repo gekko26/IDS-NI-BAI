@@ -74,6 +74,16 @@ rows are tagged source='sample' (seed only via
 `Backend/.venv/bin/python -m scripts.seed_samples`). Unit tests run from
 Backend/ (`-m unittest discover -s ../tests -t ..`) because the app
 package lives under Backend/.
+(2026-11-09, "design" task) Frontend design language, chosen by me per
+Gg's "smooth, clean, many animations, icons, not template-looking":
+split-screen login (dark ink panel #0b1322 + light form), ink side gets
+ambient motion (grid drift, packet network via SMIL, self-drawing
+shield), light side gets staggered choreographed entrances; one blue
+accent, red only for attacks/errors, green only for live/online status.
+All motion is CSS/SVG — no animation libraries; particles are semantic
+(packet flow matches the IDS story). Reduced-motion respected via
+@media (prefers-reduced-motion: reduce). Bundle stays single-Vite-build
+without routing/icon/chart libs.
 (2026-11-09, app task) Backend: FastAPI 0.162.2 + Uvicorn 0.54.0 inside
 Backend/.venv (requirements.txt = pip freeze); SQLite via stdlib sqlite3
 (no ORM) in Backend/app/db.py, dev DB file Backend/data/app.db

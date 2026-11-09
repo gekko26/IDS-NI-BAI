@@ -118,22 +118,12 @@ git@github.com:gekko26/IDS-NI-BAI.git (master pushed, tracking). Verified:
 push → new branch + tracking; venv python --version. Unresolved: Pi's IP,
 Snort host, gateway-target collision. Next: Gg decides the 12 features.
 
-(2026-11-09) App task 1 (Gg): Vite+React login page in Frontend/ and a
-FastAPI+SQLite smoke test in Backend/. New: Frontend package.json,
-vite.config.js (/api → 127.0.0.1:8000 dev proxy mirroring the Nginx plan),
-index.html, src/{main,App}.jsx, src/pages/{Login,Dashboard}.jsx and a
-5-token palette styles.css; Backend/app/{__init__,db,main}.py with
-/api/health and /api/db/status (stdlib sqlite3, WAL, telemetry table);
-Backend/requirements.txt (pip freeze: fastapi 0.162.2, uvicorn 0.54.0);
-npm install 62 pkgs; Frontend/.gitkeep removed. Verified (outputs pasted
-in reply): `npm run build` = 33 modules ok; GET 127.0.0.1:8000/api/health
-= ok; /api/db/status → journal_mode wal, roundtrip_ok true, rows_total
-1→2 (persists); via Vite proxy localhost:5173/api/health = ok; localhost:
-5173/ serves the app HTML. Vite binds localhost/::1, not 127.0.0.1 — use
-localhost. Unverified: browser rendering (no browser here) — build and
-dev-server responses only. OPEN: real authentication (placeholder accepts
-any non-empty credentials). Next: real auth, then the detections schema
-once the 12 features are decided.
+(2026-11-09) App task 1 (Gg): Vite+React scaffold, first login page, and
+the backend/db smoke test (Backend/app/{__init__,db,main}.py,
+requirements.txt = fastapi 0.162.2 + uvicorn 0.54.0, npm 62 pkgs).
+Verified then (outputs pasted in replies): build ok, /api/health ok,
+WAL + roundtrip + persistence, /api proxy ok. Vite binds localhost/::1 —
+use localhost, not 127.0.0.1. Superseded detail lives in earlier commits.
 
 (2026-11-09) App task 2 ("go"): real auth + dashboard detections. New:
 app/security.py (PBKDF2-SHA256 600k stdlib; dummy-verify for unknown
@@ -149,6 +139,24 @@ traceback). Verified (pasted): unittest 9/9 OK; curl: wrong password
 with-token = summary of 10 rows, logout→401; npm run build ok.
 Unverified: browser rendering of auth (no browser). Open: rate limiting,
 token transport, HTTPS-with-Nginx. Next: real detector after 12 features.
+
+(2026-11-09) App task 3 (Gg): visual redesign — "smooth, animated, not
+template-looking". Changed (frontend only, zero new npm deps): split
+login with dark animated brand panel (drifting dotted grid, self-drawing
+shield, SVG network graph with SMIL animateMotion packets, floating
+mark), floating-label fields with leading icons + password eye toggle,
+sheen/lift/nudge buttons, shake error, ping API pill; dashboard gets
+sticky topbar with live pill + avatar, count-up stat tiles with hover
+lift and accent top-line, class-distribution grow-bars, staggered row
+entrances, spin-refresh + "updated Ns ago" 10 s auto-poll. Files: new
+src/components/{Icons,BrandPanel}.jsx, src/hooks/useCountUp.js; rewrote
+Login.jsx, Dashboard.jsx, styles.css; index.html favicon/theme-color.
+Verified: `npm run build` → 36 modules, 158 kB JS / 13.7 kB CSS ok; dev
+server still serves /api/health through the proxy (pasted curl). DB/
+backend untouched. Unverified: actual browser rendering (no browser
+here) — including SMIL motion and reduced-motion behaviour. Next: Gg
+looks at localhost:5173 and says what to tweak; detector still gated on
+the 12 features.
 
 ## Next tasks (do not do now)
 
