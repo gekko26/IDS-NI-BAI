@@ -44,10 +44,9 @@ under ~150 lines: merge old entries into a summary rather than deleting facts.
   dev, rsync/Git over SSH). Snort 2.9 is comparison baseline only; alerts
   imported into SQLite by a parser script. Wi-Fi clients: ESP32, IP camera,
   laptop hosting the Kali VM.
-- Conflicts with the older 2026-11-08 lab notes (unresolved): AP role moves
-  from the laptop's USB adapter to the Pi's wlan0; the Pi's IP is unstated
-  (old notes: Pi .99, gateway .1 = laptop); the host that runs Snort is
-  unstated.
+  The laptop USB
+  adapter-vs-Pi-AP question, the Pi's IP (old notes: Pi .99, gateway
+  .1 = laptop) and the Snort host are open — see Unverified.
 
 ## Verified
 
@@ -135,6 +134,21 @@ localhost. Unverified: browser rendering (no browser here) — build and
 dev-server responses only. OPEN: real authentication (placeholder accepts
 any non-empty credentials). Next: real auth, then the detections schema
 once the 12 features are decided.
+
+(2026-11-09) App task 2 ("go"): real auth + dashboard detections. New:
+app/security.py (PBKDF2-SHA256 600k stdlib; dummy-verify for unknown
+users), app/routers/{auth,detections}.py, users+sessions tables +
+detections list/summary endpoint in app/db.py; scripts/create_user.py
+(bootstrapped admin once) and scripts.seed_samples.py (10 rows, source=
+sample); tests/test_{security,db}.py: 9 unittest tests. Frontend login
+POSTs /api/login, keeps a localStorage token, boots via /api/me, logs
+out via /api/logout; dashboard shows summary tiles + a recent-table.
+Bug found+fixed: missing get_connection import in detections.py (500 →
+traceback). Verified (pasted): unittest 9/9 OK; curl: wrong password
+401, login 200+token, me 200, detections-no-token 401, detections-
+with-token = summary of 10 rows, logout→401; npm run build ok.
+Unverified: browser rendering of auth (no browser). Open: rate limiting,
+token transport, HTTPS-with-Nginx. Next: real detector after 12 features.
 
 ## Next tasks (do not do now)
 

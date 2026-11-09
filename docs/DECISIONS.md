@@ -60,6 +60,20 @@ chosen by me per Gg's "minimalist, few colours" request. Dev proxy
 (2026-11-09, app task) Login is a client-side placeholder for now: any
 non-empty username/password signs in and shows the scaffold dashboard;
 real authentication (user accounts + hashed passwords) is OPEN.
+(2026-11-09, "go" task — supersedes the placeholder above) Authentication
+is real: PBKDF2-HMAC-SHA256 (600k iterations, stdlib only, stored as
+pbkdf2_sha256$iters$salt$hash), sessions are 64-hex tokens in a sessions
+table (7-day TTL) sent as Authorization: Bearer; unknown usernames get a
+timing-equaliser dummy verify. Dev bootstrap user admin/"changeme123"
+exists only in the local gitignored DB — change it any time with
+`cd Backend && .venv/bin/python -m scripts.create_user <user>`.
+(2026-11-09, "go" task) Detections schema is feature-agnostic: the 12
+feature values live in features_json until the feature list is decided;
+classes stored as benign/dos/scan/brute_force/arp_spoof. Dashboard sample
+rows are tagged source='sample' (seed only via
+`Backend/.venv/bin/python -m scripts.seed_samples`). Unit tests run from
+Backend/ (`-m unittest discover -s ../tests -t ..`) because the app
+package lives under Backend/.
 (2026-11-09, app task) Backend: FastAPI 0.162.2 + Uvicorn 0.54.0 inside
 Backend/.venv (requirements.txt = pip freeze); SQLite via stdlib sqlite3
 (no ORM) in Backend/app/db.py, dev DB file Backend/data/app.db
