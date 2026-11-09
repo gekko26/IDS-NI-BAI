@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
-// Sign-in is a placeholder for now: any non-empty username/password passes
-// and lands on the scaffold dashboard. Real authentication (users table +
-// hashed passwords via the FastAPI backend) is a follow-up.
-export default function Login({ onLogin }) {
+// Real authentication via the FastAPI backend: POST /api/login returns a
+// session token, checked server-side against the users table (hashed
+// passwords). Wrong credentials and offline API produce distinct errors.
+export default function Login({ tokenKey, onLogin }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
   const [api, setApi] = useState('checking') // checking | online | offline
 
   useEffect(() => {
@@ -23,14 +24,33 @@ export default function Login({ onLogin }) {
     }
   }, [])
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    if (!username.trim() || !password) {
-      setError('Enter a username and password.')
-      return
-    }
+    if (busy) return
+    setBusy(true)
     setError('')
-    onLogin({ name: username.trim() })
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.trim(), password }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        localStorage.setItem(tokenKey, data.token)
+        onLogin({ name: data.username, token: data.token })
+        return
+      }
+      setError(
+        res.status === 401
+          ? 'Invalid username or password.'
+          : `Login failed (HTTP ${res.status}).`
+      )
+    } catch {
+      setError('Cannot reach the API.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -80,8 +100,11 @@ export default function Login({ onLogin }) {
 
           {error ? <p className="error">{error}</p> : null}
 
-          <button type="submit" disabled={!username.trim() || !password}>
-            Sign in
+          <button
+            type="submit"
+            disabled={busy || !username.trim() || !password}
+          >
+            {busy ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
 

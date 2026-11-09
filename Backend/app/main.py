@@ -1,8 +1,8 @@
 """IDS dashboard backend (FastAPI).
 
 Runs bound to 127.0.0.1 only; Nginx is the network-facing reverse proxy, as
-per the deployment spec. Endpoints below are minimal smoke tests proving the
-API and the database work end to end.
+per the deployment spec. Endpoints: health, a database smoke test, auth
+(login/me/logout) and detections for the dashboard.
 """
 import random
 from contextlib import asynccontextmanager
@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from fastapi import FastAPI
 
 from .db import DB_PATH, get_connection, init_db
+from .routers import auth, detections
 
 
 @asynccontextmanager
@@ -19,7 +20,10 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="IDS Backend", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="IDS Backend", version="0.2.0", lifespan=lifespan)
+
+app.include_router(auth.router)
+app.include_router(detections.router)
 
 
 @app.get("/api/health")

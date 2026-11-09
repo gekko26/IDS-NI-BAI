@@ -1,13 +1,18 @@
 """SQLite access for the IDS dashboard backend.
 
 SQLite in WAL mode stores ML detections, Snort alerts, telemetry, network
-statistics and historical logs. Kept deliberately small for now: only the
-telemetry table exists until the detection schema is finalised.
+statistics and historical logs, plus the small auth tables (users,
+sessions). The file lives under Backend/data/ by default and can be
+redirected for tests with the IDSLAB_DB environment variable.
 """
+import os
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data" / "app.db"
+_DEFAULT_DB = Path(__file__).resolve().parent.parent / "data" / "app.db"
+DB_PATH = Path(os.environ.get("IDSLAB_DB", str(_DEFAULT_DB)))
+
+SESSION_TTL_DAYS = 7
 
 
 def get_connection() -> sqlite3.Connection:
@@ -36,6 +41,41 @@ def init_db() -> None:
                 mem_pct REAL,
                 pkt_count INTEGER
             );
+
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT (
+                    strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+                )
+            );
+
+            CREATE TABLE IF NOT EXISTS sessions (
+                token TEXT PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id),
+                created_at TEXT NOT NULL DEFAULT (
+                    strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+                ),
+                expires_at TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS detections (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ts TEXT NOT NULL DEFAULT (
+                    strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+                ),
+                source TEXT NOT NULL DEFAULT 'pipeline',
+                window_start TEXT,
+                window_end TEXT,
+                predicted_class TEXT NOT NULL,
+                confidence REAL NOT NULL,
+                latency_ms REAL,
+                features_json TEXT NOT NULL DEFAULT '{}',
+                run_id TEXT
+            );
+            CREATE INDEX IF NOT EXISTS idx_detections_ts
+                ON detections (ts DESC);
             """
         )
         conn.commit()
