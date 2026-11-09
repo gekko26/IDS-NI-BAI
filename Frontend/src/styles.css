@@ -38,6 +38,11 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 18px 44px rgba(2, 6, 16, 0.6);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --font-ui: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI',
+    Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular',
+    Menlo, Consolas, monospace;
 }
 
 * {
@@ -52,11 +57,32 @@ body,
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-optical-sizing: auto;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+/* numeric readouts keep tabular figures (Inter + JetBrains Mono) */
+.stat .v,
+.mono,
+.conf,
+.updated,
+.bar-count,
+.runtime .r b,
+.segmented em,
+.form-foot .mono {
+  font-feature-settings: 'tnum' 1;
 }
 
 ::selection {
@@ -66,12 +92,6 @@ body {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-
-h1,
-h2 {
-  margin: 0;
-  letter-spacing: -0.02em;
 }
 
 /* page aurora — very slow drifting glows behind everything */
@@ -233,6 +253,7 @@ h2 {
   font-weight: 650;
   margin-top: 18px;
   color: #ffffff;
+  letter-spacing: -0.03em;
 }
 
 .brand-tag {
@@ -241,6 +262,7 @@ h2 {
   line-height: 1.65;
   margin: 10px 0 30px;
   max-width: 40ch;
+  text-wrap: pretty;
 }
 
 .brand-net {
@@ -336,14 +358,16 @@ h2 {
 
 .form-card h1 {
   font-size: 23px;
-  font-weight: 700;
+  font-weight: 680;
   color: var(--text);
+  letter-spacing: -0.03em;
 }
 
 .form-sub {
   color: var(--text-dim);
   font-size: 13.5px;
   margin: 7px 0 28px;
+  text-wrap: pretty;
 }
 
 form {
@@ -591,6 +615,7 @@ form {
   color: var(--accent-strong);
   font-weight: 650;
   font-size: 15px;
+  letter-spacing: -0.015em;
 }
 
 .topbar-brand > span:first-of-type {
@@ -728,15 +753,60 @@ button.ghost:hover {
   animation: ping-red 1.4s var(--ease-out) infinite;
 }
 
+.band-head {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.dash-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.updated {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 430;
+  color: var(--text-dim);
+}
+
+.icon-btn {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-dim);
+  border-radius: 9px;
+  padding: 7px 9px;
+  cursor: pointer;
+  display: inline-flex;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    transform 0.2s var(--ease-out),
+    background 0.2s;
+}
+
+.icon-btn:hover {
+  color: var(--accent-strong);
+  border-color: rgba(78, 129, 255, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
 .band-intro {
   position: relative;
 }
 
 .band-title {
-  font-size: 21px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 680;
   margin: 10px 0 4px;
   color: var(--text);
+  letter-spacing: -0.035em;
 }
 
 .band-sub {
@@ -744,7 +814,8 @@ button.ghost:hover {
   font-size: 13px;
   color: var(--text-dim);
   max-width: 62ch;
-  line-height: 1.5;
+  line-height: 1.6;
+  text-wrap: pretty;
 }
 
 /* sparkline */
@@ -923,16 +994,17 @@ button.ghost:hover {
 }
 
 .stat .k {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
+  font-weight: 620;
 }
 
 .stat .v {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 25px;
+  font-weight: 660;
+  letter-spacing: -0.03em;
   margin-top: 3px;
   font-variant-numeric: tabular-nums;
   color: var(--text);
@@ -967,8 +1039,9 @@ button.ghost:hover {
 
 .panel-head h2 {
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 640;
   color: var(--text);
+  letter-spacing: -0.015em;
 }
 
 .panel-hint {
@@ -1081,8 +1154,9 @@ button.ghost:hover {
 }
 
 .runtime .r b {
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 480;
   color: var(--text);
   white-space: nowrap;
 }
@@ -1204,7 +1278,9 @@ button.ghost:hover {
 }
 
 .detections .mono {
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 430;
   color: var(--text-label);
 }
 
@@ -1221,16 +1297,18 @@ button.ghost:hover {
 
 .conf {
   font-variant-numeric: tabular-nums;
-  font-weight: 550;
+  font-weight: 560;
   color: var(--text-label);
+  font-size: 13px;
 }
 
 .badge {
   display: inline-block;
   padding: 3px 10px;
   border-radius: 999px;
-  font-size: 11.5px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 580;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   transition: transform 0.2s var(--ease-out);
 }

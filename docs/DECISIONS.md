@@ -95,6 +95,12 @@ white"): ink families with a brightened accent (#3f7dff), translucent
 elevation layers (gradient + inset hairline + deep shadow), aurora
 glows, glass topbar. Palette discipline unchanged: one blue accent,
 red only for threats, mint only for live/healthy.
+(2026-11-09, "typography" task) Type system: Inter Variable (UI) +
+JetBrains Mono Variable (timestamps, numeric readouts), both self-hosted
+from npm (@fontsource-variable/*) so the lab needs no CDN at runtime.
+Rules: optical-sizing auto, tnum everywhere numbers tick, balanced
+headings with negative tracking, pretty-wrapped prose, soft weight
+ladder (580–680).
 (2026-11-09, app task) Backend: FastAPI 0.162.2 + Uvicorn 0.54.0 inside
 Backend/.venv (requirements.txt = pip freeze); SQLite via stdlib sqlite3
 (no ORM) in Backend/app/db.py, dev DB file Backend/data/app.db

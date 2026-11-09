@@ -126,30 +126,33 @@ rows, logout then 401; npm build ok.
 Unverified: browser rendering of auth (no browser). Open: rate limiting,
 token transport, HTTPS-with-Nginx. Next: real detector after 12 features.
 
-(2026-11-09) App task 4 (Gg: "after sign-in still plain"): hero band +
-runtime rail. New read-only, token-protected GET /api/system (uptime,
-counts, WAL, db bytes); Hero.jsx (narrative all-clear vs threats, 15-min
-SVG sparkline with draw-in + dashed attack series + SMIL ping dot),
-RuntimePanel.jsx (ticking uptime, WAL chip), two-column body with
-segmented All/Attacks/Benign filter and relative-age column. Verified
-(pasted): /api/system 200 with token / 401 without; npm build ok.
-(2026-11-09) App task 5 (Gg: "too white, make it designer-grade"): full
-dark theme. Tokens flipped to ink family (bg #0a0f1c, cards #101828);
-every card = translucent top-light gradient over surface + inset
-hairline + deep shadow; aurora drifting glows behind pages; glass
-topbar (backdrop-filter); brightened accent #3f7dff for dark contrast;
-translucent badges/chips/pills; dark inputs (caret accent), buttons,
-table, scrollbars; focus-visible rings; sparkline/attack-line glows.
-styles.css rewritten end-to-end (19.6 kB). Verified: npm build = 38
-modules ok. Browser look still unverified. Next: Gg eyes it; detector
-gated on the 12 features.
-
 (2026-11-09) App task 3 (Gg): visual redesign of login + dashboard —
 split dark brand panel (self-drawing shield, SMIL packet graph, grid
 drift), choreographed form (float labels, shake, sheen, ping pill), top
 bar + count-up tiles + grow-bars + staggered rows. Zero new npm deps;
 new components/{Icons,BrandPanel}.jsx, hooks/useCountUp.js. Verified:
 build ok; browser rendering unverified (no browser here).
+
+(2026-11-09) App task 4 ("after sign-in still plain"): added read-only
+token-protected GET /api/system; Hero.jsx (threat/all-clear narrative,
+15-min draw-in sparkline, SMIL ping dot), RuntimePanel.jsx (ticking
+uptime), two-column body, segmented table filters. Verified (pasted):
+/api/system 200 with token / 401 without; build ok.
+(2026-11-09) App task 5 (Gg: "too white, designer-grade"): full dark
+theme — ink tokens, translucent card layers, aurora glows, glass topbar,
+brightened accent #3f7dff, translucent pills, dark inputs/table/scrollbar,
+focus-visible rings; styles.css rewritten end-to-end. Verified: build ok.
+(2026-11-09) App task 6 (Gg: fonts "professional but smoother").
+Typography pass: self-hosted variable fonts via npm
+(@fontsource-variable/inter + jetbrains-mono; woff2 subsets bundled — no
+CDN, offline lab friendly); imports in main.jsx; --font-ui/--font-mono
+tokens; tnum on all numerics; JetBrains Mono for timestamps, ages,
+updated chip, runtime values; optical sizing, balanced headings,
+negative tracking (-0.025..-0.035em), text-wrap pretty on prose; weights
+retuned 580–680. Bug found+fixed: the dark rewrite had dropped
+.band-head/.dash-meta/.updated/.icon-btn rules; class audit confirmed
+everything else present (only .col-main intentionally bare). Verified:
+npm build ok (fonts bundled: inter-latin 48 kB + jbmono 40 kB woff2).
 
 ## Next tasks (do not do now)
 
