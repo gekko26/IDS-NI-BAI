@@ -52,6 +52,19 @@ the Arch laptop (Vim, tmux during dev, rsync or Git over SSH).
 inference only.
 (2026-11-09) Snort 2.9 is a standalone comparison baseline, not part of
 the IDS pipeline; a parser script imports its alerts into SQLite.
+(2026-11-09, app task) Frontend is a manual Vite + React 18 scaffold with
+a 5-token palette (bg #f6f8fa, surface #fff, border #e5e7eb, text
+#111827, single blue accent #2563eb; green/red only as status colours) —
+chosen by me per Gg's "minimalist, few colours" request. Dev proxy
+/api → 127.0.0.1:8000 mirrors the production Nginx routing; no CORS layer.
+(2026-11-09, app task) Login is a client-side placeholder for now: any
+non-empty username/password signs in and shows the scaffold dashboard;
+real authentication (user accounts + hashed passwords) is OPEN.
+(2026-11-09, app task) Backend: FastAPI 0.162.2 + Uvicorn 0.54.0 inside
+Backend/.venv (requirements.txt = pip freeze); SQLite via stdlib sqlite3
+(no ORM) in Backend/app/db.py, dev DB file Backend/data/app.db
+(gitignored); dev ports: FastAPI 8000, Vite 5173 (binds localhost, not
+127.0.0.1).
 (2026-11-09, setup task) Frontend/ and Backend/ dirs created as written by
 Gg (capitalized); the backend venv lives at Backend/.venv (matches the
 existing `.venv/` ignore rule; `venv/` now also ignored), made with system

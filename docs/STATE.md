@@ -110,25 +110,31 @@ Next step (user, by hand): docs/HOST_SETUP.md, then docs/CAPTURE_SETUP.md,
 then docs/KALI_LOCKDOWN.md. Next step (agents): none yet — do not start
 application code until the 12 features are decided (owner Gg).
 
-(2026-11-09) Context session. Changed: recorded Gg's full system summary
-into STATE (Current state + Unverified) and DECISIONS; nothing else — no
-code, data, policies or network settings touched. Verified: nothing new
-this session. Unresolved: Pi's IP, Snort host, gateway-target collision
-(see Unverified list) — Gg to confirm. Next step (agents): unchanged; the
-12 features remain the gating item.
+(2026-11-09) Context + setup sessions. Recorded Gg's deployment spec (Pi
+4B 8GB = gateway/AP/bridge/capture/inference; FastAPI on 127.0.0.1 behind
+Nginx; React; SQLite WAL; Snort 2.9 baseline-only; training laptop-only).
+Created Frontend/ + Backend/, backend venv Backend/.venv (Python 3.14.7),
+README.md, Backend/README.md, extended .gitignore, remote origin
+git@github.com:gekko26/IDS-NI-BAI.git (master pushed, tracking). Verified:
+push → new branch + tracking; venv python --version. Unresolved: Pi's IP,
+Snort host, gateway-target collision. Next: Gg decides the 12 features.
 
-(2026-11-09) Setup task on Gg's request. Changed: created Frontend/ and
-Backend/, backend venv at Backend/.venv (`python -m venv`, Python 3.14.7,
-pip 26.2.1, nothing installed), top-level README.md, Frontend/.gitkeep,
-Backend/README.md, .gitignore extended (app-code block: venv/, *.py[cod],
-.env, *.db, *.sqlite3, *.db-wal, *.db-shm, *.joblib, node_modules/, dist/,
-build/, .vite/). Git already initialized from 2026-11-08, so no re-init;
-added remote origin git@github.com:gekko26/IDS-NI-BAI.git and pushed.
-Verified: `git push -u origin master` → "[new branch] master -> master,
-upstream set"; `Backend/.venv/bin/python --version` → Python 3.14.7;
-staged list showed only the new files plus the docs edits, data/ excluded.
-Unverified: nothing new. Next step: Gg to decide the 12 features, then
-backend/frontend scaffolding in the dirs.
+(2026-11-09) App task 1 (Gg): Vite+React login page in Frontend/ and a
+FastAPI+SQLite smoke test in Backend/. New: Frontend package.json,
+vite.config.js (/api → 127.0.0.1:8000 dev proxy mirroring the Nginx plan),
+index.html, src/{main,App}.jsx, src/pages/{Login,Dashboard}.jsx and a
+5-token palette styles.css; Backend/app/{__init__,db,main}.py with
+/api/health and /api/db/status (stdlib sqlite3, WAL, telemetry table);
+Backend/requirements.txt (pip freeze: fastapi 0.162.2, uvicorn 0.54.0);
+npm install 62 pkgs; Frontend/.gitkeep removed. Verified (outputs pasted
+in reply): `npm run build` = 33 modules ok; GET 127.0.0.1:8000/api/health
+= ok; /api/db/status → journal_mode wal, roundtrip_ok true, rows_total
+1→2 (persists); via Vite proxy localhost:5173/api/health = ok; localhost:
+5173/ serves the app HTML. Vite binds localhost/::1, not 127.0.0.1 — use
+localhost. Unverified: browser rendering (no browser here) — build and
+dev-server responses only. OPEN: real authentication (placeholder accepts
+any non-empty credentials). Next: real auth, then the detections schema
+once the 12 features are decided.
 
 ## Next tasks (do not do now)
 
